@@ -15,21 +15,16 @@ sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get install git docker
 ```
-3. Navigate to where you want to store the project files and create a new directory and open it.
+3. Navigate to the location where you want to store the project files.
 
-```
-mkdir 2023-group-14
-cd  2023-group-14
-```
-
-4. Clone the git repository into the folder.
+4. Clone the git repository into the folder. It will automatically create a folder with the project name.
 ```
 git clone https://git.chalmers.se/courses/dit638/students/2023-group-14.git
 ```
 
 5. Open the directory.
 ```
-cd UPDATE ME
+cd 2023-group-14
 ```
 
 6. Build the docker image.
@@ -48,8 +43,10 @@ docker run group-14/release:latest (ARGUMENT)
 To be updated...
 
 ## How are we working?
-For software development, we will actively work with feature branches.
-We have the protected main branch where no developer cannot push any work directly to.  To develop a new feature, a developer shall create a new branch with a meaningful branch name. All development effort shall be made in the feature branch including potential unit tests. For larger features, work can take place in sub-branches to make code reviews more manageable and allow for several developers to work on the same feature in parallel. When the feature branch works properly with the current main branch, the developer can make a merge request and this request can be either accepted or rejected depending on the code review result by peer developers.
+- For software development, we will actively work with feature branches. We have the protected main branch where no developer cannot push any work directly to. To develop a new feature, a developer shall create a new branch with a meaningful branch name. All development effort shall be made in the feature branch including potential unit tests. 
+- For larger features, work can take place in sub-branches to make code reviews more manageable and allow for several developers to work on the same feature in parallel.
+- When the feature branch works properly with the current main branch, the developer can make a merge request and this request can be either accepted or rejected depending on the code review result by peer developers.
+- When an unexpected behavior is found in the code in an existing branch, a bug issue shall be created and the issue shall be resolved in the sub-branch.
 
 ## Code review
 Pull requests shall be reviewed by at least one peer developer. The reviewer shall ensure that the submitted code is in accordance with the project's guidelines and works as described. If the request is approved, it can be merged by the reviewer directly, if it is not approved, the reason shall be made clear using comments. These comments shall be kind and written with a focus on the code, not on the author.
@@ -80,15 +77,4 @@ Implement #20 to reduce the docker image size
 - [Ubuntu](https://ubuntu.com/)
 - [Runner](https://docs.gitlab.com/runner/)
 - [Catch2](https://github.com/catchorg/Catch2) *If we decide to do testing*
-
-## [MIT License](https://opensource.org/license/mit/)
-
-Copyright (c) [2023] [2023-group-14]
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 
