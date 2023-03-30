@@ -29,7 +29,7 @@ cd 2023-group-14/Sample\ Project/
 
 6. Build the docker image.
 ```
-docker build -t group-14/release:latest -f dockerfile .
+docker build -t group-14/release:latest -f Dockerfile .
 ```
 
 7. Run the docker image. The image needs a decimal number as argument to work.
