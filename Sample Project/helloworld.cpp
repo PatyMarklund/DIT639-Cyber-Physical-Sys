@@ -3,6 +3,7 @@
 //comment for A6 submission
 //Comment for A6 from Erik
 //Comment for A6 from Mijin
+//Comment for A6 from Patricia
 
 int main(int argc, char ** argv) {
     if(argc == 2) {
