@@ -24,7 +24,7 @@ git clone https://git.chalmers.se/courses/dit638/students/2023-group-14.git
 
 5. Open the directory.
 ```
-cd 2023-group-14
+cd 2023-group-14/Sample\ Project/
 ```
 
 6. Build the docker image.
