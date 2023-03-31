@@ -31,7 +31,7 @@ stages:
 # Display information before we start the build.
 before_script:
   - docker info
-  - docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY <<< "$CI_REGISTRY_PAT"
+  - echo "$CI_REGISTRY_PAT" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   
 # This section describes what shall be done to build and test the project.
 build-and-test:
