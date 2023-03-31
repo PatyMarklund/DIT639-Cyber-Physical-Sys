@@ -4,7 +4,7 @@
 //Comment for A6 from Erik
 //Comment for A6 from Mijin
 //Comment for A6 from Patricia
-
+//Comment for A6 from Anna
 int main(int argc, char ** argv) {
     if(argc == 2) {
         int number = std::stoi(argv[1]);
