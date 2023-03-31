@@ -39,6 +39,7 @@ build-and-test:
     - docker-build
   stage: build
   script:
+    - ls
     - cd /Sample\ Project/
     - docker build -f Dockerfile .
 
