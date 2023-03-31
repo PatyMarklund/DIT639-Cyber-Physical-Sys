@@ -3,6 +3,8 @@
 ## Description
 To be updated when we receive more information about the course.
 
+https://gitlab.example.com/Test123/2023-group-14/badges/ci-cd-pipeline/pipeline.svg?ignore_skipped=true
+
 ## How to run our project
 
 This guide is written to work on Ubuntu Desktop LTS 22.04
