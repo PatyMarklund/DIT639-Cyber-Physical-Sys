@@ -3,7 +3,8 @@
 ## Description
 To be updated when we receive more information about the course.
 
-https://gitlab.example.com/Test123/2023-group-14/badges/ci-cd-pipeline/pipeline.svg?ignore_skipped=true
+
+[![pipeline status](https://git.chalmers.se/courses/dit638/students/2023-group-14/badges/main/pipeline.svg)](https://git.chalmers.se/courses/dit638/students/2023-group-14/-/commits/main) 
 
 ## How to run our project
 
