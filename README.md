@@ -6,8 +6,6 @@ To be updated when we receive more information about the course.
 
 [![pipeline status](https://git.chalmers.se/courses/dit638/students/2023-group-14/badges/main/pipeline.svg)](https://git.chalmers.se/courses/dit638/students/2023-group-14/-/commits/main) 
 
-TEMPORARY TEST FOR BRANCH.
-[![pipeline status](https://git.chalmers.se/courses/dit638/students/2023-group-14/badges/ci-cd-pipeline/pipeline.svg)](https://git.chalmers.se/courses/dit638/students/2023-group-14/-/commits/ci-cd-pipeline) 
 ## How to run our project
 
 This guide is written to work on Ubuntu Desktop LTS 22.04
