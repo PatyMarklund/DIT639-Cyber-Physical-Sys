@@ -32,7 +32,7 @@ stages:
 before_script:
   - docker info
   - echo "$CI_REGISTRY_PAT" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-  
+
 # This section describes what shall be done to build and test the project.
 build-and-test:
   tags:
@@ -40,7 +40,8 @@ build-and-test:
   stage: build
   script:
     - cd Sample-Project
-    - docker build -f Dockerfile .
+    - docker build -f Dockerfile -t "$CI_REGISTRY_IMAGE"/build-output:"$CI_COMMIT_SHA-temporary" .
+    - docker push "$CI_REGISTRY_IMAGE"/build-output:"$CI_COMMIT_SHA-temporary"
   except:
     - tags
 
@@ -50,11 +51,10 @@ release:
     - docker-build
   stage: deploy
   script:
-    - cd Sample-Project
-    - docker build -f Dockerfile -t "$CI_REGISTRY_IMAGE":"$CI_COMMIT_TAG" .
+    - docker pull "$CI_REGISTRY_IMAGE"/build-output:"$CI_COMMIT_SHA-temporary"
+    - docker tag "$CI_REGISTRY_IMAGE"/build-output:"$CI_COMMIT_SHA-temporary" "$CI_REGISTRY_IMAGE":"$CI_COMMIT_TAG"
     - docker push "$CI_REGISTRY_IMAGE":"$CI_COMMIT_TAG"
   only:
     - /^v\d+\.\d+\.\d+/
   dependencies:
     - build-and-test
-
