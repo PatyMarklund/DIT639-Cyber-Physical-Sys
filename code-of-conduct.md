@@ -27,4 +27,3 @@ The main communication channel will be our Discord server, all members are expec
 ## How will we solve conflicts? 
 - When it comes to a conflict related to work, the issue shall be resolved majority vote of the team. 
 - When it comes to a conflicts between individual members, they are responsible for resolving it. If that does not work, the issue shall be brought up and solved in the group. In worst case, the teacher and teaching assistant could intervene to help out the resolution.
-
