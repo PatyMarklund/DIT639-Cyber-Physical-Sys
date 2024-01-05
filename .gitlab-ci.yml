@@ -1,60 +1,99 @@
-# Copyright (C) 2023  Christian Berger
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+image: docker:23.0.4
 
-# Which Docker image shall be used on the GitLab runner?
-image: docker:19.03.3
-
-# Details about how to connect to the Docker service to run this build.
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
+  BUILDX_URL: https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64
+  BUILDX_BUILDER: multibuilder
+  BUILDX_PLATFORM: linux/amd64,linux/arm/v7
+  JOB_ID: 0
+  PROJECT_URL: courses%2Fdit638%2Fstudents%2F2023-group-14
+
 
 services:
-  - name: docker:19.03.3-dind
+  - name: docker:23.0.4-dind
+    command: ["--experimental"]
 
 stages:
-  - build
-  - deploy
+  - Get last commit data
+  - Build
+  - Create Diagrams 
 
-# Display information before we start the build.
 before_script:
-  - docker info
   - echo "$CI_REGISTRY_PAT" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
 
-# This section describes what shall be done to build and test the project.
-build-and-test:
+Get data:
   tags:
     - docker-build
-  stage: build
+  stage: Get last commit data
   script:
-    - cd Sample-Project
-    - docker build -f Dockerfile -t "$CI_REGISTRY_IMAGE"/build-output:"$CI_COMMIT_SHA-temporary" .
-    - docker push "$CI_REGISTRY_IMAGE"/build-output:"$CI_COMMIT_SHA-temporary"
+    - |
+      apk add --no-cache curl jq
+      JOB_ID=$(curl --header "PRIVATE-TOKEN:$CI_REGISTRY_PAT" \
+      "https://git.chalmers.se/api/v4/projects/courses%2Fdit638%2Fstudents%2F2023-group-14/jobs?scope[]=success" \
+      | jq -r 'map(select(.name=="Build and push")) | .[0].id')
+    - echo $JOB_ID
+    - curl --header "PRIVATE-TOKEN:$CI_REGISTRY_PAT" -o artifacts.zip "https://git.chalmers.se/api/v4/projects/courses%2Fdit638%2Fstudents%2F2023-group-14/jobs/$JOB_ID/artifacts"
+    - unzip -o artifacts.zip -d $CI_PROJECT_DIR/
+    - rm -f $CI_PROJECT_DIR/output/output_prediction_old.csv
+    - mv $CI_PROJECT_DIR/output/output_prediction.csv $CI_PROJECT_DIR/output/output_prediction_old.csv
+  artifacts:
+    paths:
+      - output/output_prediction_old.csv
   except:
     - tags
 
-# This section describes what shall be done to deploy artefacts from the project.
-release:
+Build and push:
   tags:
     - docker-build
-  stage: deploy
+  stage: Build
   script:
-    - docker pull "$CI_REGISTRY_IMAGE"/build-output:"$CI_COMMIT_SHA-temporary"
-    - docker tag "$CI_REGISTRY_IMAGE"/build-output:"$CI_COMMIT_SHA-temporary" "$CI_REGISTRY_IMAGE":"$CI_COMMIT_TAG"
-    - docker push "$CI_REGISTRY_IMAGE":"$CI_COMMIT_TAG"
-  only:
-    - /^v\d+\.\d+\.\d+/
-  dependencies:
-    - build-and-test
+    - mkdir -p $HOME/.docker/cli-plugins/
+    - wget -O $HOME/.docker/cli-plugins/docker-buildx $BUILDX_URL
+    - chmod a+x $HOME/.docker/cli-plugins/docker-buildx
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    - docker buildx create --use --driver docker-container --name ${BUILDX_BUILDER} --platform=${BUILDX_PLATFORM}
+    - docker buildx inspect --bootstrap ${BUILDX_BUILDER}
+    - docker buildx ls
+    - cd cpp-opencv-linear-regression
+    - docker buildx build --platform=${BUILDX_PLATFORM} --no-cache -f Dockerfile -t "$CI_REGISTRY_IMAGE"/build-output:"$CI_COMMIT_SHA-temporary" --push .
+    - docker run --rm -d --net=host --ipc=host -v /tmp:/tmp -v $CI_PROJECT_DIR/output:/output "$CI_REGISTRY_IMAGE"/build-output:"$CI_COMMIT_SHA-temporary" --cid=253 --name=img --width=640 --height=480 --pipeline
+  artifacts:
+    paths:
+      - output/
+  except:
+    - tags
+  
+
+Save Artifacts:
+  tags:
+    - docker-build
+  stage: Create Diagrams
+  script:
+    - mv $CI_PROJECT_DIR/output/result_predictions.csv $CI_PROJECT_DIR/output/result_recording33.csv
+  artifacts:
+    paths:
+      - output/result_recording33.csv
+  except:
+    - tags
+  needs: ["Build and push"]
+
+Plot Diagrams:
+  tags:
+    - docker-build
+  stage: Create Diagrams
+  script:
+    - docker run --rm -v $(pwd):/work remuslazar/gnuplot -e "set xlabel 'time'; set ylabel 'Steering Wheel Angle';
+      set grid;
+      set datafile separator ';';
+      set term png size 1920,1080;
+      set output 'output/plot.png';
+      plot 'output/result_recording33.csv' using 1 with lines linecolor rgb 'blue' title 'Actual values', '' using 2 with lines linecolor rgb 'red' title 'New estimation', '' using 3 with lines linecolor rgb 'yellow' title 'Previous estimation';"
+  artifacts:
+    paths:
+      - output/plot.png
+      - output/result_recording33.csv
+  except:
+    - tags
+  needs: ["Save Artifacts"]
+  

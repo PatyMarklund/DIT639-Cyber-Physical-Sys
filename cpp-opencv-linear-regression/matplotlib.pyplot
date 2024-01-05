@@ -1,0 +1,9 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+
+data = pd.read_csv('output_predictions.csv')
+plt.plot(data['x'], data['y'])
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.title('Plot')
+plt.savefig('output/plot.png')
